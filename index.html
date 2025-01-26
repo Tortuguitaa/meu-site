@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luv</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Camada de fundo com a imagem fornecida e filtro rosa */
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://media.discordapp.net/attachments/1333152561083060234/1333187005148037151/IMG_7376.jpg?ex=6797faa7&is=6796a927&hm=2816ccca73ef2c564f3b7bdfa644b5ede710b1ccbee19d1efbe672c5f8992190&=&format=webp&width=556&height=416');
+            background-size: cover;
+            z-index: -1;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 67, 224, 0.315); /* Fundo claro e suave */
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            text-align: center;
+            max-width: 450px;
+            width: 80%;
+            transform: translateY(-20px);
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        /* Efeito de fade-in suave */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gif {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 25px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ff00d488;
+        }
+
+        .text {
+            font-size: 26px;
+            margin-bottom: 30px;
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 1px;
+            animation: fadeInText 1.2s ease;
+        }
+
+        /* Efeito de animação suave no texto */
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .button {
+            background: rgba(255, 0, 102, 0.8); /* Fundo rosa semi-transparente */
+            color: white; /* Texto branco */
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 0, 102, 0.5);
+            opacity: 0;
+            animation: fadeInButton 1.5s ease 0.5s forwards;
+        }
+
+        /* Efeito de animação nos botões */
+        @keyframes fadeInButton {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(255, 0, 102, 0.7);
+        }
+
+        .button:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 10px rgba(255, 0, 102, 0.8);
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        footer a {
+            color: #ff66b2;
+            text-decoration: none;
+        }
+
+        /* Ícone de seleção de idioma */
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 104, 242, 0.616);
+            padding: 10px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .language-selector img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .language-text {
+            margin-left: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Estilo do dropdown */
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            top: 39px;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.411);
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+        }
+
+        .language-dropdown a {
+            display: block;
+            padding: 8px 0;
+            text-align: center;
+            font-size: 14px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .language-dropdown a:hover {
+            background-color: #ff66b394;
+            color: rgb(255, 255, 255);
+        }
+
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 30px;
+            }
+            .gif {
+                width: 100px;
+                height: 100px;
+            }
+            .text {
+                font-size: 22px;
+            }
+            .button {
+                font-size: 16px;
+                padding: 12px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+
+    <canvas id="backgroundCanvas"></canvas>
+    <div class="container">
+        <img 
+            src="https://media.discordapp.net/attachments/1333152561083060234/1333188915267375188/IMG_7377.png?ex=6797fc6e&is=6796aaee&hm=8ad2c104ad500b639f0b87c260f82abca28df242d1fd04cc4939070da98adc99&=&format=webp&quality=lossless&width=329&height=416" 
+            class="gif"
+        >
+        <div class="text" id="welcome-text">Bem-vindo ao meu portfólio!</div>
+        <div class="buttons">
+            <a href="https://discord.gg/gudys" class="button" target="_blank">Discord</a>
+            <a href="https://www.tiktok.com/@aylaggrk?lang=pt-BR" class="button" target="_blank">TikTok</a>
+            <a href="https://www.instagram.com/porraeasub?igsh=MWRodzYzMHppbmp3ZQ%3D%3D" class="button" target="_blank">Instagram</a>
+        </div>
+    </div>
+
+    <footer>
+        <p id="credits">Créditos para <strong>_qzx2</strong> pelo design e desenvolvimento deste site.</p>
+    </footer>
+
+    <div class="language-selector">
+        <div class="language-text">🌐 Português</div>
+        <div class="language-dropdown">
+            <a href="#" id="portuguese-btn">Português</a>
+            <a href="#" id="english-btn">English</a>
+        </div>
+    </div>
+
+    <script>
+        // Prevenir uso das teclas de atalho
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'F12' || (event.ctrlKey && event.shiftKey && event.key === 'I')) {
+                event.preventDefault();
+            }
+        });
+
+        // Função para alterar o idioma
+        function changeLanguage(language) {
+            const welcomeText = document.getElementById('welcome-text');
+            const creditsText = document.getElementById('credits');
+
+            if (language === 'en') {
+                welcomeText.textContent = "Welcome to my portfolio!";
+                creditsText.innerHTML = "Credits to <strong>_qzx2</strong> for the design and development of this website.";
+                document.querySelector('.language-text').textContent = "🌐 English";
+            } else {
+                welcomeText.textContent = "Bem-vindo ao meu portfólio!";
+                creditsText.innerHTML = "Créditos para <strong>_qzx2</strong> pelo design e desenvolvimento deste site.";
+                document.querySelector('.language-text').textContent = "🌐 Português";
+            }
+        }
+
+        // Ações de clique nos botões de idioma
+        document.getElementById('portuguese-btn').addEventListener('click', function() {
+            changeLanguage('pt');
+        });
+
+        document.getElementById('english-btn').addEventListener('click', function() {
+            changeLanguage('en');
+        });
+
+        // Configuração do canvas e partículas permanece o mesmo
+        const canvas = document.getElementById('backgroundCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 120;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 3 + 1;
+                this.color = 'rgba(255, 255, 255, 0.8)';
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+
+                this.draw();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => particle.update());
+            requestAnimationFrame(animate);
+        }
+
+        initParticles();
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
